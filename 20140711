@@ -6,8 +6,12 @@ Get started with Swift by downloading Xcode 6 beta, now available to all Registe
 
 Compatibility
 One of the most common questions we heard at WWDC was, “What is the compatibility story for Swift?”. This seems like a great first topic.
+
+## Swift开发的app兼容13年发布的iOS 7和OS X 10.9系统
 App Compatibility
-Simply put, if you write a Swift app today and submit it to the App Store this Fall when iOS 8 and OS X Yosemite are released, you can trust that your app will work well into the future. In fact, you can target back to OS X Mavericks or iOS 7 with that same app. This is possible because Xcode embeds a small Swift runtime library within your app’s bundle. Because the library is embedded, your app uses a consistent version of Swift that runs on past, present, and future OS releases.
+Simply put, if you write a Swift app today and submit it to the App Store this Fall when iOS 8 and OS X Yosemite are released, you can trust that your app will work well into the future. 
+In fact, you can target back to OS X Mavericks or iOS 7 with that same app. This is possible because Xcode embeds a small Swift runtime library within your app’s bundle. 
+Because the library is embedded, your app uses a consistent version of Swift that runs on past, present, and future OS releases.
 Binary Compatibility and Frameworks
 While your app’s runtime compatibility is ensured, the Swift language itself will continue to evolve, and the binary interface will also change. To be safe, all components of your app should be built with the same version of Xcode and the Swift compiler to ensure that they work together.
 This means that frameworks need to be managed carefully. For instance, if your project uses frameworks to share code with an embedded extension, you will want to build the frameworks, app, and extensions together. It would be dangerous to rely upon binary frameworks that use Swift — especially from third parties. As Swift changes, those frameworks will be incompatible with the rest of your app. When the binary interface stabilizes in a year or two, the Swift runtime will become part of the host OS and this limitation will no longer exist.
