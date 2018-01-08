@@ -1,11 +1,11 @@
 # PlaySwift1
 - initial swift test
-20100718Chris Lattner <clattner@apple.com>Chris Lattner
+20100717Chris Lattner <clattner@apple.com>Chris Lattner
 
 - initial checkin, nothing much to see here.
 20100718Chris Lattner <clattner@apple.com>Chris Lattner
 
--5e88a  sketch out lexer and token interfaces.
+- 5e88a  sketch out lexer and token interfaces.
 20100718Chris Lattner <clattner@apple.com>Chris Lattner
 
 ## Xcode 6 beta3 changes
