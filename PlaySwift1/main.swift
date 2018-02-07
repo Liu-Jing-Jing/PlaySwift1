@@ -483,19 +483,67 @@ let heartsDescription = hearts.simpleDescription()
 // 在switch里，枚举成员使用缩写.Hearts来引用，因为self的值已经知道是一个suit。已知变量类型的情况下你可以使用缩写
 
 
-
 // 使用struct来创建一个结构体。结构体和类有很多相同的地方，比如方法和构造器。
 // 它们结构体之间最大的一个区别就是 结构体是传值，类是传引用。
-struct Card {
+struct Card
+{
     var rank: Rank
     var suit: Suit
     func simpleDescription() -> String {
         return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
     }
+    
+    func playingCardDeck(suitCount: Int, rankCount: Int) -> [Card] {
+        var deck:[Card] = []
+        
+        
+        for i in 1...suitCount {
+            for j in 1...rankCount{
+                
+                let rank = Rank(rawValue: j)
+                var s:Suit?;
+                print("loop--\(String(describing: rank))")
+                if let r = rank
+                {
+                    switch i {
+                        case 1:
+                            s = .Spades
+                        case 2:
+                            s = .Diamonds
+                        case 3:
+                            s = .Hearts
+                        case 4:
+                            s = .Clubs
+                    default:
+                            s = nil
+                    }
+                    
+                    let newCard = Card(rank: r, suit: s!)
+                    deck.append(newCard)
+                }
+            }
+        }
+        
+        return deck;
+    }
 }
+
 let threeOfSpades = Card(rank: .Three, suit: .Spades)
 let threeOfSpadesDescription = threeOfSpades.simpleDescription()
+print(threeOfSpades)
+print(threeOfSpadesDescription)
+
+var deck = threeOfSpades.playingCardDeck(suitCount: 4, rankCount: 13)
+var index:Int = 1
+for i in deck
+{
+    print("第\(index)张扑克牌是\(i.rank)-\(i.suit)")
+    index += 1
+}
+
 // 练习：给Card添加一个方法，创建一副完整的扑克牌并把每张牌的rank和suit对应起来。
+
+
 
 // 一个枚举成员的实例可以有实例值。
 // 相同枚举成员的实例可以有不同的值。创建实例的时候传入值即可。
@@ -503,4 +551,110 @@ let threeOfSpadesDescription = threeOfSpades.simpleDescription()
 // 实例值和原始值是不同的：
 // 枚举成员的原始值对于所有实例都是相同的，而且你是在定义枚举的时候设置原始值。
 // 例如，考虑从服务器获取日出和日落的时间。服务器会返回正常结果或者错误信息。
+enum ServerResponse {
+    case Result(String, String)
+    case Error(String)
+}
 
+let success = ServerResponse.Result("6:00 am", "8:09 pm")
+let failure = ServerResponse.Error("Out of cheese.")
+
+
+switch success
+{
+    case let .Result(sunrise, sunset):
+        let serverResponse = "Sunrise is at \(sunrise) and sunset is at \(sunset)."
+        print(serverResponse)
+    case let .Error(error): //没有执行这个case
+    let serverResponse = "Failure...  \(error)"
+    print(serverResponse)
+}
+
+
+
+// 协议的使用
+protocol ExampleProtocol {
+    var simpleDescription: String { get }
+    mutating func adjust() //这个关键字是为了扩展
+}
+// mutating 关键字修饰方法是为了能在该方法中修改 struct 或是 enum 的变量
+// 在设计接口的时候，也要考虑到使用者程序的扩展性。所以要多考虑使用mutating来修饰方法。
+class SimpleClass: ExampleProtocol {
+    var simpleDescription: String = "A very simple class."
+    var anotherProperty: Int = 69105
+    // 实现协议方法
+    func adjust() {
+        simpleDescription += "  Now 100% adjusted."
+    }
+}
+var a = SimpleClass()
+a.adjust()
+let aDescription = a.simpleDescription
+
+struct SimpleStructure: ExampleProtocol {
+    var simpleDescription: String = "A simple structure"
+    mutating func adjust() {
+        simpleDescription += " (adjusted)"
+    }
+}
+var b = SimpleStructure()
+b.adjust()
+let bDescription = b.simpleDescription
+print(bDescription)
+
+
+
+// 使用extension来为现有的类型添加功能，比如添加一个计算属性的方法。
+// 你可以使用扩展来给任意类型添加协议，甚至是你从外部库或者框架中导入的类型。
+extension Int: ExampleProtocol {
+    var simpleDescription: String {
+        return "The number \(self)"
+    }
+    mutating func adjust() {
+        self += 42
+    }
+}
+print(7.simpleDescription)
+
+
+let protocolValue: ExampleProtocol = a
+// protocolValue.simpleDescription
+// protocolValue.anotherProperty  // Uncomment to see the error
+
+
+// 范型的使用
+func repeatStr<ItemType>(item: ItemType, times: Int) -> [ItemType] {
+    var result:[ItemType] = []
+    for _ in 0..<times {
+        result.append(item)
+    }
+    return result
+}
+// repeat是Swift的关键字 更改语法啦
+print(repeatStr(item: "knock", times: 4))
+
+// Reimplement the Swift standard library's optional type
+enum OptionalValue<T> {
+    case None
+    case Some(T)
+}
+var possibleInteger: OptionalValue<Int> = .None
+possibleInteger = .Some(100)
+print(possibleInteger)
+
+// where来指定一个需求列表
+// 例如要限定实现一个协议的类型，需要限定两个类型要相同，或者限定一个类必须有一个特定的父类
+func anyCommonElements<T:Sequence, U:Sequence>(_ lhs: T, _ rhs: U) -> Bool
+    where T.Iterator.Element:Equatable, T.Iterator.Element == U.Iterator.Element{
+        
+    for lhsItem in lhs
+    {
+        for rhsItem in rhs
+        {
+            if lhsItem == rhsItem {return true}
+        }
+    }
+    return false
+}
+
+print(anyCommonElements([1, 2, 3], [3]))
